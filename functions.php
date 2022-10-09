@@ -157,3 +157,28 @@ function file_get_csv($file, $header_row=true)
     fclose($handle);
     return $array;
 }
+
+function file_get_cached($remote, $local=null, $ttl=8400)
+{
+    if ($local == null) {
+        $parse = parse_url($remote);
+        $full_remote = $parse['path'];
+        if (isset($parse['query']))
+            $full_remote .= $parse['query'];
+        if (isset($parse['fragment']))
+            $full_remote .= $parse['fragment'];
+
+        $local = preg_replace("/\W+/", "", $full_remote);
+    }
+    
+    if (file_exists($local)) {
+        $file_age = time() - filemtime($local);
+        if ($file_age < $ttl)
+            return file_get_contents($local);
+    }
+
+    $contents = file_get_contents($remote);
+    file_put_contents($local, $contents);
+
+    return $contents;
+}
