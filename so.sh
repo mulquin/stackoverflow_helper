@@ -2,12 +2,10 @@
 
 php answer.php $1
 
-IFS="/"
-read -a fragments <<< "$1"
-ID=${fragments[4]}
-IFS=""
+ID=$(cat answering.txt)
+rm answering.txt
 
-cd $ID
+cd answers/$ID
 
 codium index.php
 
