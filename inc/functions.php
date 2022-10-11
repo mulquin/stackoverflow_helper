@@ -138,7 +138,7 @@ function needs_sql_template($tags) {
 }
 
 function create_sql_template($question) {
-    if (!needs_sql_template($question))
+    if (!needs_sql_template($question['tags']))
         return '';
 
     $id = explode('/', parse_url($question['url'], PHP_URL_PATH))[2];
