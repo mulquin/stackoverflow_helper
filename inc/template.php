@@ -10,3 +10,7 @@ Tags: ${TAGS}
 */
 
 include '../../inc/helpers.php';
+
+/*
+${SQL}
+*/

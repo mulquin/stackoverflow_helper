@@ -1,5 +1,10 @@
 <?php
 
+const DB_HOST = 'webdev.mulquin.net';
+const DB_USER = 'root';
+const DB_PASS = 'root';
+const DB_NAME = 'so';
+
 // https://gist.github.com/simivar/037b13a9bbd53ae5a092d8f6d9828bc3
 function unprint_r($input) {
     $lines = preg_split('#\r?\n#', trim($input));

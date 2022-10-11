@@ -17,7 +17,6 @@ function get_stackoverflow_page($url, $answer_dir)
     curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0');
     $page = curl_exec($ch);
     curl_close($ch);
-
     return $page;
 }
 
@@ -94,9 +93,33 @@ function create_answer_index($answer_dir, $question)
         '${AUTHOR}' => $question['author'],
         '${TITLE}' => $question['title'],
         '${URL}' => $question['url'],
-        '${TAGS}' => implode(', ', $question['tags'])
+        '${TAGS}' => implode(', ', $question['tags']),
+        '${SQL}' => create_sql_template($question)
     ];
 
     $data = str_replace(array_keys($replace), array_values($replace), $template);
     file_put_contents($index_file, $data);
+}
+
+function needs_sql_template($tags) {
+    foreach ($tags as $tag) {
+        if (str_contains(strtolower($tag), 'sql'))
+            return true;
+    }
+    return false;
+}
+
+function create_sql_template($question) {
+    if (!needs_sql_template($question))
+        return '';
+
+    $id = explode('/', parse_url($question['url'], PHP_URL_PATH))[2];
+
+    $template = <<<SQL
+\$mysql = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+\$mysql->query('CREATE TABLE IF NOT EXISTS ${id} (id TEXT, name TEXT);');
+\$mysql->query('SELECT * FROM ${id};');
+SQL;
+
+    return $template;
 }
