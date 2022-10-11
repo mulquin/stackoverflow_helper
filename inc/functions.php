@@ -3,7 +3,7 @@
 function create_answer_dir($id)
 {
     $dir = ANSWERS_DIR . $id . DIRECTORY_SEPARATOR;
-    if (mkdir($dir))
+    if (mkdir($dir, 0777, true))
         return $dir;
 
     return false;
