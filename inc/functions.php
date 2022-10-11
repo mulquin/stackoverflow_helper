@@ -1,5 +1,16 @@
 <?php
 
+function stop($msg)
+{
+    answering_dot_txt();
+    die($msg . PHP_EOL);
+}
+
+function answering_dot_txt($id=-1)
+{
+    file_put_contents('answering.txt', $id);
+}
+
 function create_answer_dir($id)
 {
     $dir = ANSWERS_DIR . $id . DIRECTORY_SEPARATOR;
@@ -7,6 +18,21 @@ function create_answer_dir($id)
         return $dir;
 
     return false;
+}
+
+function remove_answer_dir($id)
+{
+    $dir = ANSWERS_DIR . $id . DIRECTORY_SEPARATOR;
+
+    $di = new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS);
+    $ri = new \RecursiveIteratorIterator($di, \RecursiveIteratorIterator::CHILD_FIRST);
+    foreach ($ri as $file) {
+        if ($file->isDir())
+            rmdir($file);
+        else
+            unlink($file);
+    }
+    rmdir($dir);
 }
 
 function get_stackoverflow_page($url, $answer_dir)
